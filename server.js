@@ -75,12 +75,36 @@ apiRouter.post('/authenticate', function(req, res){
 	});
 });
 
+//routing authentication
 apiRouter.use(function(req, res, next){
 	console.log('api use boi');
 
-	//authentication here
+	//check header / url parameters / post parameters for token
+	var token = req.body.token || req.param('token') || req.headers['x-access=token'];
 
-	next();
+	//decode token
+	if (token){
+		//verifies secret and checks exp
+		jwt.verify(token, superSecret, function(err, decoded){
+			if (err) {
+				return res.status(403).send({
+					success: false,
+					message: 'Failed to authenticate token'
+				});
+			} else{
+				//if all good, save reqeust to use in other routes
+				req.decoded = decoded;
+				next();
+			}
+		});
+	}
+	else{
+		//if no token, return HTTP 403 response (access forbidden) and error msg
+		return res.status(403).send({
+			success: false,
+			message: 'No token provided'
+		});
+	}
 });
 
 apiRouter.get('/', function(req, res){
