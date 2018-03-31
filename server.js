@@ -6,11 +6,14 @@ var morgan = require('morgan');
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
+// MODELS
+var User = require('./app/models/user');
+
 
 //APP CONFIG
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-mongoose.connect('mongodb://trisonn:newpass@ds149437.mlab.com:49437/chores');
+mongoose.connect('mongodb://trison:choretime@ds149437.mlab.com:49437/chores');
 
 // config app to handle CORS requests
 app.use(function(req, res, next){
