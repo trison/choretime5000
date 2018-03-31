@@ -92,7 +92,7 @@ apiRouter.use(function(req, res, next){
 					message: 'Failed to authenticate token'
 				});
 			} else{
-				//if all good, save reqeust to use in other routes
+				//if all good, save decoded request to use in other routes
 				req.decoded = decoded;
 				next();
 			}
@@ -168,6 +168,10 @@ apiRouter.route('/users/:user_id')
 		});
 	});
 
+apiRouter.get('/me', function(req, res){
+	//decoded from middleware
+	res.send(req.decoded);
+});
 
 //admin
 var adminRouter = express.Router();
