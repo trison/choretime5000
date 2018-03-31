@@ -4,7 +4,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
-var port = process.env.PORT || 8080;
+var jwt = require('jsonwebtoken');
 
 // MODELS
 var User = require('./app/models/user');
@@ -13,6 +13,8 @@ var User = require('./app/models/user');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 mongoose.connect('mongodb://trison:choretime@ds149437.mlab.com:49437/chores');
+var port = process.env.PORT || 8080;
+var superSecret = 'gr8chores';
 
 // config app to handle CORS requests
 app.use(function(req, res, next){
@@ -34,6 +36,45 @@ app.get('/', function(req, res){
 //api
 var apiRouter = express.Router();
 
+apiRouter.post('/authenticate', function(req, res){
+	//find user
+	User.findOne({
+		username: req.body.username
+	}).select('name username password').exec(function(err, user){
+		if (err) throw err;
+
+		//no user with that username found
+		if (!user){
+			res.json({
+				success: false,
+				message: 'Authentication failed. User not found.'
+			});
+		} else if (user){
+			var validPassword = user.comparePassword(req.body.password);
+			if(!validPassword){
+				res.json({
+					success: false,
+					message: 'Authentication failed: Wrong password.'
+				});
+			} else{
+				//if user found and pass good, create token
+				var token = jwt.sign({
+					name: user.name,
+					username: user.username
+				}, superSecret, {
+					expiresIn: 1440 //24 hours
+				});
+				//return the info including token as JSON
+				res.json({
+					success: true,
+					message: 'Enjoy your token boi',
+					token: token
+				});
+			}
+		}
+	});
+});
+
 apiRouter.use(function(req, res, next){
 	console.log('api use boi');
 
@@ -44,27 +85,6 @@ apiRouter.use(function(req, res, next){
 
 apiRouter.get('/', function(req, res){
 	res.json({ message: 'welcome to da api' });
-});
-
-//admin
-var adminRouter = express.Router();
-
-adminRouter.use(function(req, res, next){
-	console.log(req.method, req.url);
-
-	next();
-});
-
-adminRouter.get('/', function(req, res){
-	res.send('THE DASHBOARD');
-});
-
-adminRouter.get('/users', function(req, res){
-	res.send('ALL THE USERS');
-});
-
-adminRouter.get('/posts', function(req, res){
-	res.send('ALL THE POSTS');
 });
 
 //users
@@ -124,6 +144,27 @@ apiRouter.route('/users/:user_id')
 		});
 	});
 
+
+//admin
+var adminRouter = express.Router();
+
+adminRouter.use(function(req, res, next){
+	console.log(req.method, req.url);
+
+	next();
+});
+
+adminRouter.get('/', function(req, res){
+	res.send('THE DASHBOARD');
+});
+
+adminRouter.get('/users', function(req, res){
+	res.send('ALL THE USERS');
+});
+
+adminRouter.get('/posts', function(req, res){
+	res.send('ALL THE POSTS');
+});
 
 
 //register routes
