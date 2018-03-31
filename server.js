@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
+var path = require('path');
 
 // MODELS
 var User = require('./app/models/user');
@@ -26,9 +27,10 @@ app.use(function(req, res, next){
 
 // log requests to console
 app.use(morgan('dev'));
+//public folder for assetts
+app.use(express.static(__dirname + '/public'));
 
-var path = require('path');
-app.get('/', function(req, res){
+app.get('*', function(req, res){
 	res.sendFile(path.join(__dirname + '/public/angular/views/index.html'));
 });
 

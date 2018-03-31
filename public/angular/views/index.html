@@ -4,13 +4,36 @@
 	<meta charset="UTF-8"> 
 	<title>Chore Time 5000</title>
 
+	<!-- set base path for angular routing -->
+	<base href="/">
 
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="style.css">	
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	<!-- JS -->
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-route.js"></script>
+
 </head>
-<body>
-	<h1>Chore Time 5000</h1>
-	<div class="yo">AYYYYY</div>
+<body class="container">
+	<header>
+		<nav class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">CHORETIME 5000</a>
+			</div>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/"><i class="fa fa-home">Home</i></a></li>		
+				<li><a href="/about"><i class="fa fa-shield">About</i></a></li>
+				<li><a href="/contact"><i class="fa fa-comment">Contact</i></a></li>
+			</ul>
+		</nav>
+	</header>
+	<!-- INJECT VIEW -->
+	<main>
+		Injection here
+	</main>
 </body>
 </html>
