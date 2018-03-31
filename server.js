@@ -9,12 +9,10 @@ var port = process.env.PORT || 8080;
 // MODELS
 var User = require('./app/models/user');
 
-
 //APP CONFIG
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 mongoose.connect('mongodb://trison:choretime@ds149437.mlab.com:49437/chores');
-
 
 // config app to handle CORS requests
 app.use(function(req, res, next){
@@ -23,16 +21,16 @@ app.use(function(req, res, next){
 	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 	next();
 });
+
 // log requests to console
 app.use(morgan('dev'));
 
-// ROUTES FOR API
 var path = require('path');
-
 app.get('/', function(req, res){
 	res.sendFile(path.join(__dirname + '/public/angular/views/index.html'));
 });
 
+// ROUTES
 //api
 var apiRouter = express.Router();
 
@@ -88,7 +86,14 @@ apiRouter.route('/users')
 			res.json({ message: 'User created!' });
 		});
 	})
-
+	//get users
+	.get(function(req, res){
+		User.find(function(err, users){
+			if (err) res.send(err);
+			res.json(users);
+		});
+	})
+	
 
 //register routes
 app.use('/api', apiRouter);
