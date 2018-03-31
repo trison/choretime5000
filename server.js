@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 mongoose.connect('mongodb://trison:choretime@ds149437.mlab.com:49437/chores');
 
+
 // config app to handle CORS requests
 app.use(function(req, res, next){
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -35,6 +36,14 @@ app.get('/', function(req, res){
 //api
 var apiRouter = express.Router();
 
+apiRouter.use(function(req, res, next){
+	console.log('api use boi');
+
+	//authentication here
+
+	next();
+});
+
 apiRouter.get('/', function(req, res){
 	res.json({ message: 'welcome to da api' });
 });
@@ -44,6 +53,7 @@ var adminRouter = express.Router();
 
 adminRouter.use(function(req, res, next){
 	console.log(req.method, req.url);
+
 	next();
 });
 
@@ -58,6 +68,27 @@ adminRouter.get('/users', function(req, res){
 adminRouter.get('/posts', function(req, res){
 	res.send('ALL THE POSTS');
 });
+
+//users
+apiRouter.route('/users')
+	//create user
+	.post(function(req, res){
+		var user = new User();
+		user.name = req.body.name;
+		user.username = req.body.username;
+		user.password = req.body.password;
+
+		user.save(function(err){
+			if(err){
+				//duplicate entry
+				if (err.code==11000)
+					return res.json({ success: false, message: 'A user with that username already exists' });
+				else return res.send(err);
+			}
+			res.json({ message: 'User created!' });
+		});
+	})
+
 
 //register routes
 app.use('/api', apiRouter);
