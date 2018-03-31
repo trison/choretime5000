@@ -1,4 +1,4 @@
-angular.module('choreTime', [])
+angular.module('choreApp', [])
 
 .controller('mainController', function(){
 	var vm = this;
@@ -6,4 +6,15 @@ angular.module('choreTime', [])
 	
 })
 
-
+.controller('homeController', function(){
+	var vm = this;
+	vm.message = "you're at the home page";
+})
+.controller('aboutController', function(){
+	var vm = this;
+	vm.message = "you're at the about page";
+})
+.controller('contactController', function(){
+	var vm = this;
+	vm.message = "you're at the contact page";
+});
